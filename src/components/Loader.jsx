@@ -1,9 +1,7 @@
-import React from "react";
-
 const Loader = () => {
   return (
-    <div>
-      <h3>Loader</h3>
+    <div className="h-screen flex justify-center items-center">
+      <progress className="progress w-56"></progress>
     </div>
   );
 };
