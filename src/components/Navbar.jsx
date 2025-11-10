@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import MyLink from "./MyLink";
+import logo from "/vite.svg";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -46,6 +47,7 @@ const Navbar = () => {
       <div className="navbar bg-base-100 sticky top-0 z-50 w-11/12 mx-auto">
         <div className="navbar-start">
           {/* Logo / Brand Name */}
+          <img className="h-10 mr-2" src={logo} alt="" />
           <Link to="/" className="text-2xl font-bold text-primary">
             Habit Tracker
           </Link>

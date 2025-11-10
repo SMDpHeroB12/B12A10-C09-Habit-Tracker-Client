@@ -1,6 +1,7 @@
 import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { Link } from "react-router";
+import logo from "/vite.svg";
 
 const Footer = () => {
   return (
@@ -9,7 +10,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           {/* Logo & Name */}
           <div>
-            <h2 className="text-2xl font-bold text-primary">Habit Tracker</h2>
+            <div className="flex">
+              <img className="h-10 mr-2" src={logo} alt="" />
+              <h2 className="text-2xl font-bold text-primary">Habit Tracker</h2>
+            </div>
             <p className="mt-2 text-sm">
               Build better habits, one day at a time.
             </p>
