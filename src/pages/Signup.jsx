@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
@@ -22,7 +23,7 @@ const Signup = () => {
   const navigate = useNavigate();
   const googleProvider = new GoogleAuthProvider();
 
-  // 🔹 Password Validation
+  // Password Validation
   const validatePassword = (password) => {
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters long");
@@ -39,7 +40,7 @@ const Signup = () => {
     return true;
   };
 
-  // 🔹 Handle Form Submit
+  // Handle Form Submit
   const handleSignup = async (e) => {
     e.preventDefault();
     const { name, photoURL, email, password } = formData;
@@ -70,7 +71,7 @@ const Signup = () => {
     }
   };
 
-  // 🔹 Google Signup
+  // Google Signup
   const handleGoogleSignup = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
@@ -83,110 +84,116 @@ const Signup = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[85vh] bg-base-200 px-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="text-3xl font-bold text-center text-primary mb-6">
-            Create an Account
-          </h2>
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="card w-full max-w-md"
+      >
+        <div className="card w-full max-w-md bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="text-3xl font-bold text-center text-primary mb-6">
+              Create an Account
+            </h2>
 
-          <form onSubmit={handleSignup} className="space-y-4">
-            {/* Name */}
-            <div>
-              <label className="label">
-                <span className="label-text font-semibold">Full Name</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                className="input input-bordered w-full"
-                required
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-              />
-            </div>
+            <form onSubmit={handleSignup} className="space-y-4">
+              {/* Name */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Full Name</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  className="input input-bordered w-full"
+                  required
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                />
+              </div>
 
-            {/* Photo URL */}
-            <div>
-              <label className="label">
-                <span className="label-text font-semibold">Photo URL</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Enter your photo URL"
-                className="input input-bordered w-full"
-                value={formData.photoURL}
-                onChange={(e) =>
-                  setFormData({ ...formData, photoURL: e.target.value })
-                }
-              />
-            </div>
+              {/* Photo URL */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Photo URL</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your photo URL"
+                  className="input input-bordered w-full"
+                  value={formData.photoURL}
+                  onChange={(e) =>
+                    setFormData({ ...formData, photoURL: e.target.value })
+                  }
+                />
+              </div>
 
-            {/* Email */}
-            <div>
-              <label className="label">
-                <span className="label-text font-semibold">Email</span>
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="input input-bordered w-full"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-            </div>
+              {/* Email */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Email</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="input input-bordered w-full"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
 
-            {/* Password */}
-            <div>
-              <label className="label">
-                <span className="label-text font-semibold">Password</span>
-              </label>
-              <input
-                type="password"
-                placeholder="Create a strong password"
-                className="input input-bordered w-full"
-                required
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-            </div>
+              {/* Password */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Password</span>
+                </label>
+                <input
+                  type="password"
+                  placeholder="Create a strong password"
+                  className="input input-bordered w-full"
+                  required
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                />
+              </div>
 
-            {/* Submit Button */}
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="btn btn-primary w-full mt-4"
+                disabled={loading}
+              >
+                {loading ? "Creating Account..." : "Sign Up"}
+              </button>
+            </form>
+
+            <div className="divider">OR</div>
+
+            {/* Google Signup */}
             <button
-              type="submit"
-              className="btn btn-primary w-full mt-4"
-              disabled={loading}
+              onClick={handleGoogleSignup}
+              className="btn btn-outline w-full flex items-center justify-center gap-2"
             >
-              {loading ? "Creating Account..." : "Sign Up"}
+              <FcGoogle size={22} />
+              Continue with Google
             </button>
-          </form>
 
-          <div className="divider">OR</div>
-
-          {/* Google Signup */}
-          <button
-            onClick={handleGoogleSignup}
-            className="btn btn-outline w-full flex items-center justify-center gap-2"
-          >
-            <FcGoogle size={22} />
-            Continue with Google
-          </button>
-
-          {/* Redirect to Login */}
-          <p className="text-center text-sm mt-4">
-            Already have an account?{" "}
-            <Link to="/login" className="link link-primary">
-              Login Now
-            </Link>
-          </p>
+            {/* Redirect to Login */}
+            <p className="text-center text-sm mt-4">
+              Already have an account?{" "}
+              <Link to="/login" className="link link-primary">
+                Login Now
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

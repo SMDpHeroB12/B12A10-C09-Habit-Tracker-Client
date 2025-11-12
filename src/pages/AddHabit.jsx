@@ -24,6 +24,8 @@ const AddHabit = () => {
     const category = form.category.value;
     const reminderTime = form.reminderTime.value;
     const image = form.image.files[0];
+    const isPublic = form.isPublic.checked;
+    const isFeatured = form.isFeatured.checked;
 
     try {
       let uploadedImageURL = "";
@@ -57,6 +59,8 @@ const AddHabit = () => {
         userEmail: user?.email,
         userName: user?.displayName,
         createdAt: new Date(),
+        isPublic,
+        isFeatured,
       };
 
       // Send to backend
@@ -71,7 +75,7 @@ const AddHabit = () => {
       const data = await res.json();
 
       if (data.insertedId) {
-        toast.success("✅ Habit added successfully!");
+        toast.success("Habit added successfully!");
         form.reset();
         navigate("/");
       } else {
@@ -98,21 +102,21 @@ const AddHabit = () => {
             name="title"
             placeholder="Habit Title"
             required
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border border-gray-200 rounded-lg"
           />
 
           <textarea
             name="description"
             placeholder="Description"
             required
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border border-gray-200 rounded-lg"
           ></textarea>
 
           {/* Dropdown Category */}
           <select
             name="category"
             required
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border border-gray-200 rounded-lg"
           >
             <option value="">Select Category</option>
             <option value="Morning">Morning</option>
@@ -123,30 +127,56 @@ const AddHabit = () => {
           </select>
 
           {/* Reminder Time Picker */}
-          <input
-            type="time"
-            name="reminderTime"
-            required
-            className="w-full p-3 border rounded-lg"
-          />
+          <div className="w-full flex justify-between items-center p-3 border border-gray-200 rounded-lg">
+            <label className="block mb-1 font-semibold w-[40%]">
+              Reminder Time
+            </label>
+            <input
+              type="time"
+              name="reminderTime"
+              required
+              className="p-3 border border-gray-200 rounded-lg w-[60%]"
+            />
+          </div>
 
           {/* Upload Image */}
-          <div className=" flex justify-between items-center p-3 border rounded-lg  ">
+          <div className="flex justify-between p-3 border border-gray-200 rounded-lg">
             <label
               htmlFor="input"
-              className=" flex  w-[30%] items-center justify-center "
+              className="flex w-[30%] items-center justify-center"
             >
               Upload an image :
             </label>
-            <div className="flex justify-center items-center text-white rounded-lg bg-[#99c8e2] ml-2 hover:bg-blue-600 font-semibold w-[70%] h-16 mx-auto">
+            <div className="flex justify-center items-center text-white rounded-lg bg-[#99c8e2] ml-2 hover:bg-blue-600 font-semibold w-[65%] h-16 mx-auto">
               <input
                 type="file"
                 name="image"
                 accept="image/*"
-                className="  w-full flex pl-5"
+                className="w-full flex pl-5"
               />
-              <MdUpload className="w-[30%] flex place-items-center justify-center " />
+              <MdUpload className="w-[30%] flex place-items-center justify-center" />
             </div>
+          </div>
+
+          {/* Public & Featured Checkboxes */}
+          <div className="flex gap-4 mt-2">
+            <label className="label cursor-pointer">
+              <span className="label-text">Make Public?</span>
+              <input
+                type="checkbox"
+                name="isPublic"
+                className="checkbox checkbox-primary ml-2"
+              />
+            </label>
+
+            <label className="label cursor-pointer">
+              <span className="label-text">Feature this habit?</span>
+              <input
+                type="checkbox"
+                name="isFeatured"
+                className="checkbox checkbox-secondary ml-2"
+              />
+            </label>
           </div>
 
           {/* Read-only user info */}
@@ -155,14 +185,14 @@ const AddHabit = () => {
             name="userEmail"
             value={user?.email || ""}
             readOnly
-            className="w-full p-3 border rounded-lg bg-gray-100"
+            className="w-full p-3 border border-gray-200 rounded-lg bg-gray-100"
           />
           <input
             type="text"
             name="userName"
             value={user?.displayName || ""}
             readOnly
-            className="w-full p-3 border rounded-lg bg-gray-100"
+            className="w-full p-3 border border-gray-200 rounded-lg bg-gray-100"
           />
 
           <button

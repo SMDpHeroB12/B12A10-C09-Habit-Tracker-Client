@@ -3,49 +3,61 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
 import AddHabit from "../pages/AddHabit";
-import BrowseHabits from "../pages/BrowseHabits";
 import MyHabits from "../pages/MyHabits";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import ProtectedRoute from "./ProtectedRoute";
+import HabitDetails from "../pages/HabitDetails";
+import BrowsePublicHabits from "../pages/BrowsePublicHabits";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    errorElement: <NotFound></NotFound>,
+    errorElement: <NotFound />,
     children: [
       {
         path: "/",
-        element: <Home></Home>,
+        element: <Home />,
+      },
+      {
+        path: "/habit/:id",
+        element: (
+          <ProtectedRoute>
+            <HabitDetails />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/add-habit",
         element: (
           <ProtectedRoute>
-            <AddHabit></AddHabit>
+            <AddHabit />
           </ProtectedRoute>
         ),
       },
+
       {
         path: "/my-habits",
         element: (
           <ProtectedRoute>
-            <MyHabits></MyHabits>
+            <MyHabits />
           </ProtectedRoute>
         ),
       },
+
       {
         path: "/browse",
-        element: <BrowseHabits></BrowseHabits>,
+        element: <BrowsePublicHabits />,
       },
+
       {
         path: "/login",
-        element: <Login></Login>,
+        element: <Login />,
       },
       {
         path: "/signup",
-        element: <Signup></Signup>,
+        element: <Signup />,
       },
     ],
   },

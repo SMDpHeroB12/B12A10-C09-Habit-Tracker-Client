@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from "../services/firebase.config";
+import Swal from "sweetalert2";
 
 export const AuthContext = createContext(null);
 
@@ -15,14 +16,28 @@ export const AuthProvider = ({ children }) => {
 
   const googleProvider = new GoogleAuthProvider();
 
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    try {
+      return await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Google Sign-in Error:", error);
+      Swal.fire("Login Failed!", error.message, "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const logOut = () => {
+  const logOut = async () => {
     setLoading(true);
-    return signOut(auth);
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout Error:", error);
+      Swal.fire("Logout Failed!", error.message, "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

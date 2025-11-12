@@ -82,7 +82,8 @@ const Navbar = () => {
                       user?.photoURL ||
                       "https://www.svgrepo.com/show/384670/account-avatar-profile-user.svg"
                     }
-                    alt="user avatar"
+                    alt="userAvatar"
+                    referrerPolicy="no-referrer"
                   />
                 </div>
               </div>
