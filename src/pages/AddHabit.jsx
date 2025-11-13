@@ -64,13 +64,16 @@ const AddHabit = () => {
       };
 
       // Send to backend
-      const res = await fetch("http://localhost:3000/habits", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(newHabit),
-      });
+      const res = await fetch(
+        "https://habit-tracker-server-iota.vercel.app/habits",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(newHabit),
+        }
+      );
 
       const data = await res.json();
 
