@@ -1,16 +1,42 @@
-# React + Vite
+# Habit Tracker — Build Better Habits Every Day
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 🖥️ Live Site: [https://habit-tracker-b12a10c09.web.app/](https://habit-tracker-b12a10c09.web.app/)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📖 About the Project
 
-## React Compiler
+**Habit Tracker** is a productivity web application that helps users build, track, and maintain positive habits with daily progress updates.  
+Users can create personalized habits, mark them as complete, and monitor their streaks — all in a clean, user-friendly interface.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🚀 Key Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ✅ **Personalized Habit Management** – Add, edit, or delete habits anytime with full CRUD functionality.
+- 📅 **Daily Completion Tracking** – Mark your habits as complete once per day, and track progress automatically.
+- 🔥 **Smart Streak System** – View your ongoing streaks and stay motivated to maintain consistency.
+- 🌍 **Public & Featured Habits** – Explore shared habits from other users with category and keyword search filters.
+- 🧠 **User Authentication** – Secure login and registration using Firebase Authentication (Google Sign-In supported).
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:** React (Vite), React Router, Firebase Hosting  
+**Backend:** Node.js, Express.js, MongoDB (hosted on Vercel)  
+**UI Libraries:** Tailwind CSS, React Icons, React Tooltip
+
+---
+
+## 🧩 Deployment
+
+- **Client Side:** Firebase Hosting
+- **Server Side:** Vercel
+- **Database:** MongoDB Atlas
+
+---
+
+## 👨‍💻 Author
+
+Developed by SHEKH MD NAYEM YOUSUF
