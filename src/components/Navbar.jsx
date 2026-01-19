@@ -12,60 +12,73 @@ const Navbar = () => {
   const handleLogout = () => {
     logOut()
       .then(() => {
+        setMenuOpen(false);
         console.log("User logged out");
       })
       .catch((error) => console.error(error));
   };
 
-  const MyLinks = (
+  const closeMobileMenu = () => setMenuOpen(false);
+
+  const publicLinks = (
     <>
-      <li>
-        <MyLink to={"/"} className="">
-          Home
-        </MyLink>
+      <li onClick={closeMobileMenu}>
+        <MyLink to={"/"}>Home</MyLink>
       </li>
-      <li>
-        <MyLink to={"/add-habit"} className="">
-          Add Habit
-        </MyLink>
+      <li onClick={closeMobileMenu}>
+        <MyLink to={"/browse"}>Browse Public Habits</MyLink>
       </li>
-      <li>
-        <MyLink to={"/my-habits"} className="">
-          My Habits
-        </MyLink>
+    </>
+  );
+
+  const privateLinks = (
+    <>
+      <li onClick={closeMobileMenu}>
+        <MyLink to={"/add-habit"}>Add Habit</MyLink>
       </li>
-      <li>
-        <MyLink to={"/browse"} className="">
-          Browse Public Habits
-        </MyLink>
+      <li onClick={closeMobileMenu}>
+        <MyLink to={"/my-habits"}>My Habits</MyLink>
       </li>
     </>
   );
 
   return (
-    <div className=" shadow-sm">
-      <div className="navbar bg-base-100 sticky top-0 z-50 w-11/12 mx-auto">
-        <div className="navbar-start">
+    <div className="shadow-sm bg-base-100 sticky top-0 z-50">
+      <nav className="navbar w-11/12 mx-auto">
+        <div className="navbar-start w-2/3 lg:w-1/2">
           {/* Logo / Brand Name */}
-          <img className="h-10 mr-2" src={logo} alt="" />
-          <Link to="/" className="text-2xl font-bold text-primary">
+          <img className="h-10 mr-2" src={logo} alt="Habit Tracker Logo" />
+          <Link
+            to="/"
+            onClick={closeMobileMenu}
+            className="text-2xl font-bold text-primary"
+          >
             Habit Tracker
           </Link>
         </div>
 
         {/* For Large Screen */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">{MyLinks}</ul>
+          <ul className="menu menu-horizontal px-1 gap-2">
+            {publicLinks}
+            {user && privateLinks}
+          </ul>
         </div>
 
         {/* Right Side (Auth) */}
         <div className="navbar-end">
           {!user ? (
             <div className="space-x-2 flex">
-              <Link to="/login" className="btn btn-outline btn-sm">
+              <Link
+                to="/login"
+                className="btn btn-outline btn-sm hidden lg:inline-flex"
+              >
                 Login
               </Link>
-              <Link to="/signup" className="btn btn-primary btn-sm">
+              <Link
+                to="/signup"
+                className="btn btn-primary btn-sm hidden lg:inline-flex"
+              >
                 Signup
               </Link>
             </div>
@@ -75,6 +88,7 @@ const Navbar = () => {
                 tabIndex={0}
                 role="button"
                 className="btn btn-ghost btn-circle avatar"
+                aria-label="Open profile menu"
               >
                 <div className="w-10 rounded-full">
                   <img
@@ -87,9 +101,10 @@ const Navbar = () => {
                   />
                 </div>
               </div>
+
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 shadow"
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-56 shadow"
               >
                 <li>
                   <span className="font-semibold">
@@ -99,7 +114,19 @@ const Navbar = () => {
                 <li>
                   <span className="text-xs text-gray-500">{user?.email}</span>
                 </li>
+
                 <div className="divider my-1"></div>
+
+                {/* Advanced menu items (A10-ready) */}
+                <li onClick={closeMobileMenu}>
+                  <Link to="/profile">Profile</Link>
+                </li>
+                <li onClick={closeMobileMenu}>
+                  <Link to="/dashboard">Dashboard Home</Link>
+                </li>
+
+                <div className="divider my-1"></div>
+
                 <li>
                   <button onClick={handleLogout} className="text-red-500">
                     Log Out
@@ -114,6 +141,7 @@ const Navbar = () => {
             <button
               className="btn btn-ghost"
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
             >
               {menuOpen ? <FaTimes /> : <FaBars />}
             </button>
@@ -123,10 +151,40 @@ const Navbar = () => {
         {/* Mobile Menu Drawer */}
         {menuOpen && (
           <div className="absolute top-full left-0 w-full bg-base-100 shadow-lg lg:hidden">
-            <ul className="menu p-3">{MyLinks}</ul>
+            <ul className="menu p-3">
+              {publicLinks}
+              {user && privateLinks}
+
+              <div className="divider my-2"></div>
+
+              {!user ? (
+                <>
+                  <li onClick={closeMobileMenu}>
+                    <Link to="/login">Login</Link>
+                  </li>
+                  <li onClick={closeMobileMenu}>
+                    <Link to="/signup">Signup</Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li onClick={closeMobileMenu}>
+                    <Link to="/profile">Profile</Link>
+                  </li>
+                  <li onClick={closeMobileMenu}>
+                    <Link to="/dashboard">Dashboard Home</Link>
+                  </li>
+                  <li>
+                    <button onClick={handleLogout} className="text-red-500">
+                      Log Out
+                    </button>
+                  </li>
+                </>
+              )}
+            </ul>
           </div>
         )}
-      </div>
+      </nav>
     </div>
   );
 };
