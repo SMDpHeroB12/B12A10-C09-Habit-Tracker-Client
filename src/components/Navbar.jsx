@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <div className="shadow-sm bg-base-100 sticky top-0 z-50">
-      <nav className="navbar w-11/12 mx-auto">
+      <nav className="navbar sm:w-11/12 mx-auto">
         <div className="navbar-start w-2/3 lg:w-1/2">
           {/* Logo / Brand Name */}
           <img className="h-10 mr-2" src={logo} alt="Habit Tracker Logo" />
@@ -66,9 +66,9 @@ const Navbar = () => {
         </div>
 
         {/* Right Side (Auth) */}
-        <div className="navbar-end">
+        <div className="navbar-end w-1/3 lg:w-1/2 flex justify-end items-center ">
           {!user ? (
-            <div className="space-x-2 flex">
+            <div className="space-x-2 flex ">
               <Link
                 to="/login"
                 className="btn btn-outline btn-sm hidden lg:inline-flex"
@@ -117,7 +117,7 @@ const Navbar = () => {
 
                 <div className="divider my-1"></div>
 
-                {/* Advanced menu items (A10-ready) */}
+                {/* Advanced menu items */}
                 <li onClick={closeMobileMenu}>
                   <Link to="/profile">Profile</Link>
                 </li>
@@ -137,7 +137,7 @@ const Navbar = () => {
           )}
 
           {/* For Mobile */}
-          <div className="lg:hidden ml-2">
+          <div className="lg:hidden ml-2 ">
             <button
               className="btn btn-ghost"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -150,20 +150,24 @@ const Navbar = () => {
 
         {/* Mobile Menu Drawer */}
         {menuOpen && (
-          <div className="absolute top-full left-0 w-full bg-base-100 shadow-lg lg:hidden">
-            <ul className="menu p-3">
+          <div className="absolute top-full left-0 w-full bg-base-100 shadow-lg lg:hidden ">
+            <ul className="menu p-3 w-full gap-2">
               {publicLinks}
               {user && privateLinks}
 
-              <div className="divider my-2"></div>
+              <div className="divider my-2 "></div>
 
               {!user ? (
                 <>
                   <li onClick={closeMobileMenu}>
-                    <Link to="/login">Login</Link>
+                    <Link to="/login" className="btn btn-neutral btn-outline">
+                      Login
+                    </Link>
                   </li>
                   <li onClick={closeMobileMenu}>
-                    <Link to="/signup">Signup</Link>
+                    <Link to="/signup" className="btn btn-primary ">
+                      Signup
+                    </Link>
                   </li>
                 </>
               ) : (
@@ -175,7 +179,10 @@ const Navbar = () => {
                     <Link to="/dashboard">Dashboard Home</Link>
                   </li>
                   <li>
-                    <button onClick={handleLogout} className="text-red-500">
+                    <button
+                      onClick={handleLogout}
+                      className="btn btn-error btn-outline btn-soft"
+                    >
                       Log Out
                     </button>
                   </li>
