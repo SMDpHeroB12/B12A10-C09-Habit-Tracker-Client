@@ -22,11 +22,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/habit/:id",
-        element: (
-          <ProtectedRoute>
-            <HabitDetails />
-          </ProtectedRoute>
-        ),
+        element: <HabitDetails />,
       },
       {
         path: "/add-habit",
