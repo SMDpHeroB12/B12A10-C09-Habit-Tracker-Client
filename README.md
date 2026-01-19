@@ -4,6 +4,12 @@
 
 ---
 
+## GitHub Client Repository (Server)
+
+https://github.com/SMDpHeroB12/B12A10-C09-Habit-Tracker-server
+
+---
+
 ## 📖 About the Project
 
 **Habit Tracker** is a productivity web application that helps users build, track, and maintain positive habits with daily progress updates.  
@@ -31,12 +37,12 @@ Users can create personalized habits, mark them as complete, and monitor their s
 
 ## 🧩 Deployment
 
-- **Client Side:** Firebase Hosting
-- **Server Side:** Vercel
+- **Client Side:** Firebase Hosting : [https://habit-tracker-b12a10c09.web.app/](https://habit-tracker-b12a10c09.web.app/)
+- **Server Side:** Vercel : [https://habit-tracker-server-iota.vercel.app/](https://habit-tracker-server-iota.vercel.app/)
 - **Database:** MongoDB Atlas
 
 ---
 
 ## 👨‍💻 Author
 
-Developed by SHEKH MD NAYEM YOUSUF
+Developed by **SHEKH MD NAYEM YOUSUF**
