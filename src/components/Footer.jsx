@@ -60,22 +60,25 @@ const Footer = () => {
                   Browse Public Habits
                 </Link>
               </li>
+              <li>
+                <Link className="link link-hover" to="/about">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link className="link link-hover" to="/contact">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link className="link link-hover" to="/privacy">
+                  Privacy Policy
+                </Link>
+              </li>
 
-              {!user ? (
+              {user && (
                 <>
-                  <li>
-                    <Link className="link link-hover" to="/login">
-                      Login
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="link link-hover" to="/signup">
-                      Signup
-                    </Link>
-                  </li>
-                </>
-              ) : (
-                <>
+                  <div className="divider my-3"></div>
                   <li>
                     <Link className="link link-hover" to="/add-habit">
                       Add Habit

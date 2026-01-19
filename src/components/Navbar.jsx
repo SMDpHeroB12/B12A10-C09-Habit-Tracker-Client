@@ -1,13 +1,30 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { FaMoon, FaSun } from "react-icons/fa6";
 import MyLink from "./MyLink";
 import logo from "/vite.svg";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // ✅ Theme state (DaisyUI)
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") || "light";
+    setTheme(saved);
+    document.documentElement.setAttribute("data-theme", saved);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.setAttribute("data-theme", next);
+  };
 
   const handleLogout = () => {
     logOut()
@@ -27,6 +44,11 @@ const Navbar = () => {
       </li>
       <li onClick={closeMobileMenu}>
         <MyLink to={"/browse"}>Browse Public Habits</MyLink>
+      </li>
+
+      {/* ✅ NEW: About route */}
+      <li onClick={closeMobileMenu}>
+        <MyLink to={"/about"}>About</MyLink>
       </li>
     </>
   );
@@ -67,6 +89,16 @@ const Navbar = () => {
 
         {/* Right Side (Auth) */}
         <div className="navbar-end w-1/3 lg:w-1/2 flex justify-end items-center ">
+          {/* ✅ NEW: Theme toggle button (DaisyUI via data-theme) */}
+          <button
+            onClick={toggleTheme}
+            className="btn btn-circle mr-1"
+            aria-label="Toggle theme"
+            title="Toggle theme"
+          >
+            {theme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
+          </button>
+
           {!user ? (
             <div className="space-x-2 flex ">
               <Link
