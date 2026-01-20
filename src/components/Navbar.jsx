@@ -10,7 +10,7 @@ const Navbar = () => {
   const { user, logOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // ✅ Theme state (DaisyUI)
+  // Theme state (DaisyUI)
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Navbar = () => {
         <MyLink to={"/browse"}>Browse Public Habits</MyLink>
       </li>
 
-      {/* ✅ NEW: About route */}
+      {/* NEW: About route */}
       <li onClick={closeMobileMenu}>
         <MyLink to={"/about"}>About</MyLink>
       </li>
@@ -89,7 +89,7 @@ const Navbar = () => {
 
         {/* Right Side (Auth) */}
         <div className="navbar-end w-1/3 lg:w-1/2 flex justify-end items-center ">
-          {/* ✅ NEW: Theme toggle button (DaisyUI via data-theme) */}
+          {/* Theme toggle button (DaisyUI via data-theme) */}
           <button
             onClick={toggleTheme}
             className="btn btn-circle mr-1"

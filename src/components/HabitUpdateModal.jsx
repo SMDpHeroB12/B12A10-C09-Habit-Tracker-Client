@@ -143,7 +143,7 @@ const HabitUpdateModal = ({
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md"
       >
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+        <div className="bg-base-100 rounded-lg shadow-lg p-6 w-full  max-w-lg">
           <h3 className="text-2xl font-bold mb-4 text-center">Update Habit</h3>
 
           <form onSubmit={handleUpdate} className="space-y-3">
@@ -227,7 +227,7 @@ const HabitUpdateModal = ({
                 accept="image/*"
                 multiple
                 onChange={handleImageUpload}
-                className="w-full border bg-[#99c8e2] hover:bg-blue-600 border-gray-300 p-2 rounded"
+                className="w-full border file-input bg-[#99c8e2] hover:bg-blue-600 hover:text-base-100 border-gray-300  rounded"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Up to 5 images. First image will be used as cover.
@@ -262,7 +262,7 @@ const HabitUpdateModal = ({
                 type="text"
                 value={user?.displayName || ""}
                 readOnly
-                className="w-full border border-gray-300 p-2 rounded bg-gray-100"
+                className="w-full border border-gray-300 p-2 rounded "
               />
             </div>
 
@@ -272,24 +272,24 @@ const HabitUpdateModal = ({
                 type="email"
                 value={user?.email || ""}
                 readOnly
-                className="w-full border border-gray-300 p-2 rounded bg-gray-100"
+                className="w-full border border-gray-300 p-2 rounded text-base-content "
               />
             </div>
 
             <div className="flex justify-end space-x-3 mt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-              >
-                Cancel
-              </button>
               <button
                 type="submit"
                 disabled={updating}
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
               >
                 {updating ? "Updating..." : "Update"}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn btn-secondary px-4 py-2 rounded hover:btn-error "
+              >
+                Cancel
               </button>
             </div>
           </form>

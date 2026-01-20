@@ -145,6 +145,7 @@ const MyHabits = () => {
           <thead>
             <tr className="text-primary text-sm">
               <th>SL</th>
+              <th>Cover</th>
               <th>Title</th>
               <th>Category</th>
               <th>Status</th>
@@ -164,6 +165,9 @@ const MyHabits = () => {
                 <tr key={habit._id} className="hover">
                   {/* SL No */}
                   <td>{index + 1}</td>
+                  <td>
+                    <img src={habit.image} className="w-14" alt="" />
+                  </td>
 
                   {/* Title + Badges */}
                   <td className="font-semibold">
