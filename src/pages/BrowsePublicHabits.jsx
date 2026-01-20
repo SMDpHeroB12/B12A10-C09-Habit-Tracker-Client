@@ -16,7 +16,7 @@ const BrowsePublicHabits = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const categories = ["All", "Morning", "Work", "Fitness", "Evening", "Study"];
 
-  // ✅ Fetch Public Habits
+  // Fetch Public Habits
   useEffect(() => {
     setLoading(true);
     fetch(`${API_URL}/habits/public`)
@@ -33,7 +33,7 @@ const BrowsePublicHabits = () => {
       .finally(() => setLoading(false));
   }, [API_URL]);
 
-  // ✅ Dynamic Search & Filter
+  // Dynamic Search & Filter
   useEffect(() => {
     let results = [...habits];
     if (category !== "All") {
@@ -44,11 +44,21 @@ const BrowsePublicHabits = () => {
       results = results.filter(
         (h) =>
           h.title.toLowerCase().includes(keyword) ||
-          h.description?.toLowerCase().includes(keyword)
+          h.description?.toLowerCase().includes(keyword),
       );
     }
     setFiltered(results);
   }, [search, category, habits]);
+  const formatDate = (value) => {
+    if (!value) return "N/A";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "N/A";
+    return d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+  };
 
   return (
     <motion.div
@@ -127,7 +137,7 @@ const BrowsePublicHabits = () => {
       ) : (
         // Habit Cards
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
           layout
         >
           {filtered.map((habit) => (
@@ -159,6 +169,10 @@ const BrowsePublicHabits = () => {
                 <p className="text-sm text-gray-600 line-clamp-2">
                   {habit.description || "No description provided"}
                 </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  🗓️ Created: {formatDate(habit.createdAt)}
+                </p>
+
                 <div className="card-actions justify-between items-center mt-3">
                   <Link
                     to={`/habit/${habit._id}`}

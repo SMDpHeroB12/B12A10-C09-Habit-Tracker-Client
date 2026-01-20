@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { FaArrowLeft } from "react-icons/fa";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const HabitDetails = () => {
   const { id } = useParams();
@@ -10,10 +13,9 @@ const HabitDetails = () => {
   const [isMarking, setIsMarking] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // Calculate current streak
   const calculateStreak = (history = []) => {
     if (!history.length) return 0;
-    const sorted = [...history].sort().reverse(); // latest first
+    const sorted = [...history].sort().reverse();
     let streak = 1;
 
     for (let i = 1; i < sorted.length; i++) {
@@ -26,13 +28,23 @@ const HabitDetails = () => {
     return streak;
   };
 
+  const formatDate = (value) => {
+    if (!value) return "N/A";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "N/A";
+    return d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+  };
+
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_URL}/habits/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.success) {
-          setHabit(data.habit);
-        }
+        if (data.success) setHabit(data.habit);
         setLoading(false);
       })
       .catch((err) => {
@@ -41,7 +53,6 @@ const HabitDetails = () => {
       });
   }, [id, API_URL]);
 
-  // Mark Complete Handler
   const handleMarkComplete = async () => {
     if (!habit) return;
 
@@ -55,7 +66,6 @@ const HabitDetails = () => {
       if (data.success) {
         toast.success("Habit marked complete!");
 
-        // Update UI instantly
         const today = new Date().toISOString().split("T")[0];
         const updatedHistory = [...(habit.completionHistory || []), today];
 
@@ -98,6 +108,7 @@ const HabitDetails = () => {
     description,
     category,
     image,
+    images,
     userName,
     userEmail,
     createdAt,
@@ -106,6 +117,10 @@ const HabitDetails = () => {
 
   const currentStreak = calculateStreak(completionHistory);
 
+  // ✅ support both images[] and legacy image
+  const media =
+    Array.isArray(images) && images.length ? images : image ? [image] : [];
+
   return (
     <div className="container mx-auto px-4 py-10">
       <motion.div
@@ -113,36 +128,65 @@ const HabitDetails = () => {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-3xl mx-auto bg-base-200 rounded-xl shadow-lg overflow-hidden"
       >
-        {/* Image */}
-        {image && (
-          <img
-            src={image}
-            alt={title}
-            className="w-full h-72 object-cover border-b"
-          />
+        {/* ✅ Images Slider */}
+        {media.length > 0 && (
+          <div className="border-b">
+            <Carousel
+              showThumbs={media.length > 1}
+              infiniteLoop={media.length > 1}
+              autoPlay={media.length > 1}
+              interval={3500}
+              showStatus={false}
+              swipeable
+              emulateTouch
+            >
+              {media.map((src, idx) => (
+                <div key={idx}>
+                  <img
+                    src={src}
+                    alt={`${title} - ${idx + 1}`}
+                    className="w-full h-72 object-cover"
+                  />
+                </div>
+              ))}
+            </Carousel>
+          </div>
         )}
 
         {/* Content */}
         <div className="p-6">
           <h2 className="text-3xl font-bold text-primary mb-2">{title}</h2>
 
-          <p className="text-base text-base-content/80 mb-4">{description}</p>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-6">
-            <p>
-              <span className="font-semibold">Category:</span> {category}
-            </p>
-            <p>
-              <span className="font-semibold">Current Streak:</span>{" "}
-              {currentStreak || 0} 🔥
-            </p>
-            <p>
-              <span className="font-semibold">Created:</span>{" "}
-              {new Date(createdAt).toLocaleDateString()}
-            </p>
+          {/* Overview */}
+          <div className="mt-3">
+            <h3 className="text-lg font-semibold text-primary mb-2">
+              Overview
+            </h3>
+            <p className="text-base text-base-content/80">{description}</p>
           </div>
 
-          <div className="border-t pt-4">
+          {/* Key Info */}
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-primary mb-2">
+              Key Information
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+              <p>
+                <span className="font-semibold">Category:</span> {category}
+              </p>
+              <p>
+                <span className="font-semibold">Current Streak:</span>{" "}
+                {currentStreak || 0} 🔥
+              </p>
+              <p>
+                <span className="font-semibold">Created:</span>{" "}
+                {formatDate(createdAt)}
+              </p>
+            </div>
+          </div>
+
+          {/* Created By */}
+          <div className="border-t pt-4 mt-6">
             <h3 className="text-lg font-semibold text-primary mb-2">
               Created By
             </h3>
@@ -154,9 +198,9 @@ const HabitDetails = () => {
             </p>
           </div>
 
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Link to="/my-habits" className="btn btn-outline">
-              ← Back to My Habits
+              <FaArrowLeft /> Back to My Habits
             </Link>
             <button
               onClick={handleMarkComplete}
