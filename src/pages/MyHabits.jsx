@@ -30,7 +30,7 @@ const MyHabits = () => {
       .finally(() => setLoading(false));
   }, [API_URL, user?.email]);
 
-  // Calculate streak based on completionHistory
+  // Calculate streak
   const calculateStreak = (history = []) => {
     if (!history.length) return 0;
     const sorted = [...history].sort().reverse();
@@ -73,7 +73,7 @@ const MyHabits = () => {
     }
   };
 
-  // Mark Complete (PATCH)
+  // Mark Complete
   const handleComplete = async (id) => {
     try {
       const res = await fetch(`${API_URL}/habits/${id}/complete`, {
@@ -92,8 +92,8 @@ const MyHabits = () => {
                   ...h,
                   completionHistory: [...(h.completionHistory || []), today],
                 }
-              : h
-          )
+              : h,
+          ),
         );
       } else {
         toast.error(data.message || "Already marked complete today!");
@@ -104,16 +104,14 @@ const MyHabits = () => {
     }
   };
 
-  // Open modal with selected habit
   const openModal = (habit) => {
     setSelectedHabit(habit);
     setShowModal(true);
   };
 
-  // Update habit in UI after modal save
   const handleHabitUpdate = (updatedHabit) => {
     setHabits((prev) =>
-      prev.map((h) => (h._id === updatedHabit._id ? updatedHabit : h))
+      prev.map((h) => (h._id === updatedHabit._id ? updatedHabit : h)),
     );
   };
 
@@ -146,6 +144,7 @@ const MyHabits = () => {
         <table className="table w-full bg-base-200 rounded-lg">
           <thead>
             <tr className="text-primary text-sm">
+              <th>SL</th>
               <th>Title</th>
               <th>Category</th>
               <th>Status</th>
@@ -153,17 +152,43 @@ const MyHabits = () => {
               <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
-            {habits.map((habit) => {
+            {habits.map((habit, index) => {
               const streak = calculateStreak(habit.completionHistory);
               const completedToday = habit.completionHistory?.includes(
-                new Date().toISOString().split("T")[0]
+                new Date().toISOString().split("T")[0],
               );
 
               return (
                 <tr key={habit._id} className="hover">
-                  <td className="font-semibold">{habit.title}</td>
+                  {/* SL No */}
+                  <td>{index + 1}</td>
+
+                  {/* Title + Badges */}
+                  <td className="font-semibold">
+                    {habit.title}
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {habit.isPublic ? (
+                        <span className="badge badge-success badge-outline badge-sm">
+                          Public
+                        </span>
+                      ) : (
+                        <span className="badge badge-ghost badge-sm">
+                          Private
+                        </span>
+                      )}
+
+                      {habit.isFeatured && (
+                        <span className="badge badge-warning badge-outline badge-sm">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                  </td>
+
                   <td>{habit.category}</td>
+
                   <td>
                     {completedToday ? (
                       <span className="text-green-600 font-medium">
@@ -176,7 +201,9 @@ const MyHabits = () => {
                       <span className="ml-2 text-orange-600">🔥 {streak}d</span>
                     )}
                   </td>
+
                   <td>{streak}</td>
+
                   <td className="flex gap-2">
                     <button
                       onClick={() => openModal(habit)}

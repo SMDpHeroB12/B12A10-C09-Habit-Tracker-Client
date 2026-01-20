@@ -33,12 +33,12 @@ const Footer = () => {
   return (
     <footer className="bg-base-200 text-base-content mt-10">
       <div className="w-11/12 mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 text-center  sm:text-left">
           {/* Brand */}
           <div>
             <div className="flex items-center justify-center md:justify-start gap-2">
-              <img className="h-10" src={logo} alt="Habit Tracker Logo" />
-              <h2 className="text-2xl font-bold text-primary">Habit Tracker</h2>
+              <img className="h-8" src={logo} alt="Habit Tracker Logo" />
+              <h2 className="text-xl font-bold text-primary">Habit Tracker</h2>
             </div>
             <p className="mt-3 text-sm text-base-content/70 max-w-xs mx-auto md:mx-0">
               Build better habits, one day at a time. Track consistency, grow
@@ -47,50 +47,52 @@ const Footer = () => {
           </div>
 
           {/* Quick Links (WORKING LINKS ONLY) */}
-          <div>
+          <div className="">
             <h3 className="font-semibold text-lg mb-3">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link className="link link-hover" to="/">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link className="link link-hover" to="/browse">
-                  Browse Public Habits
-                </Link>
-              </li>
-              <li>
-                <Link className="link link-hover" to="/about">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link className="link link-hover" to="/contact">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link className="link link-hover" to="/privacy">
-                  Privacy Policy
-                </Link>
-              </li>
-
-              {user && (
-                <>
-                  <div className="divider my-3"></div>
-                  <li>
-                    <Link className="link link-hover" to="/add-habit">
-                      Add Habit
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="link link-hover" to="/my-habits">
-                      My Habits
-                    </Link>
-                  </li>
-                </>
-              )}
+            <ul className="flex gap-20 sm:gap-20 justify-center sm:justify-start">
+              <div className="space-y-2">
+                <li>
+                  <Link className="link link-hover" to="/">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link className="link link-hover" to="/browse">
+                    Browse Public Habits
+                  </Link>
+                </li>
+                <li>
+                  <Link className="link link-hover" to="/about">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link className="link link-hover" to="/contact">
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link className="link link-hover" to="/privacy">
+                    Privacy Policy
+                  </Link>
+                </li>
+              </div>
+              {/* <div className="space-y-2">
+                {user && (
+                  <>
+                    <li>
+                      <Link className="link link-hover" to="/add-habit">
+                        Add Habit
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="link link-hover" to="/my-habits">
+                        My Habits
+                      </Link>
+                    </li>
+                  </>
+                )}
+              </div> */}
             </ul>
           </div>
 
