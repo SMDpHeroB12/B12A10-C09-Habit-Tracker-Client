@@ -3,14 +3,14 @@ import { useAuth } from "../hooks/useAuth";
 import Loader from "../components/Loader";
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, roleLoading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <span className="loading loading-spinner loading-lg text-primary"></span>
-        <Loader></Loader>
+        <Loader />
       </div>
     );
   }

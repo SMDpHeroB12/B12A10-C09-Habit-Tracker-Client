@@ -2,90 +2,107 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { auth } from "../services/firebase.config";
+import { useAuth } from "../hooks/useAuth";
+
+const isValidEmail = (email) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
 
 const Signup = () => {
+  const { registerWithEmail, signInWithGoogle, signInWithFacebook, loading } =
+    useAuth();
+
   const [formData, setFormData] = useState({
     name: "",
     photoURL: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
-  const [loading, setLoading] = useState(false);
+
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
-  const googleProvider = new GoogleAuthProvider();
 
-  // Password Validation
   const validatePassword = (password) => {
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
-      return false;
-    }
-    if (!/[A-Z]/.test(password)) {
-      toast.error("Password must contain at least one uppercase letter");
-      return false;
-    }
-    if (!/[a-z]/.test(password)) {
-      toast.error("Password must contain at least one lowercase letter");
-      return false;
-    }
-    return true;
+    if (password.length < 6) return "Password must be at least 6 characters.";
+    if (!/[A-Z]/.test(password))
+      return "Password must contain at least one uppercase letter.";
+    if (!/[a-z]/.test(password))
+      return "Password must contain at least one lowercase letter.";
+    if (!/[0-9]/.test(password))
+      return "Password must contain at least one number.";
+    return "";
   };
 
-  // Handle Form Submit
+  const validate = () => {
+    const next = {};
+    if (!formData.name.trim()) next.name = "Name is required.";
+
+    if (!formData.email.trim()) next.email = "Email is required.";
+    else if (!isValidEmail(formData.email))
+      next.email = "Invalid email format.";
+
+    const passError = validatePassword(formData.password);
+    if (passError) next.password = passError;
+
+    if (!formData.confirmPassword)
+      next.confirmPassword = "Please confirm your password.";
+    else if (formData.password !== formData.confirmPassword)
+      next.confirmPassword = "Passwords do not match.";
+
+    return next;
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
-    const { name, photoURL, email, password } = formData;
 
-    if (!validatePassword(password)) return;
+    const nextErrors = validate();
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) return;
 
-    setLoading(true);
     try {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      await updateProfile(result.user, {
-        displayName: name,
-        photoURL:
-          photoURL ||
-          "https://www.svgrepo.com/show/384670/account-avatar-profile-user.svg",
+      await registerWithEmail({
+        name: formData.name.trim(),
+        photoURL: formData.photoURL.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
       });
 
-      toast.success("Account created successfully ");
+      toast.success("Account created successfully!");
       navigate("/");
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+    } catch {
+      // toast already shown in AuthContext
     }
   };
 
-  // Google Signup
   const handleGoogleSignup = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-      toast.success("Signed up with Google ");
+      await signInWithGoogle();
+      toast.success("Signed up with Google!");
       navigate("/");
-    } catch (error) {
-      toast.error(error.message);
+    } catch {
+      // toast already shown
+    }
+  };
+
+  const handleFacebookSignup = async () => {
+    try {
+      await signInWithFacebook();
+      toast.success("Signed up with Facebook!");
+      navigate("/");
+    } catch {
+      // toast already shown
     }
   };
 
   return (
     <div className="flex justify-center items-center min-h-[85vh] bg-base-200 px-4">
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
+        initial={{ opacity: 0, y: -40 }}
         whileInView={{ opacity: 1, y: 0 }}
         className="card w-full max-w-md"
       >
@@ -104,13 +121,17 @@ const Signup = () => {
                 <input
                   type="text"
                   placeholder="Enter your full name"
-                  className="input input-bordered w-full"
-                  required
+                  className={`input input-bordered w-full ${
+                    errors.name ? "input-error" : ""
+                  }`}
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                 />
+                {errors.name && (
+                  <p className="text-error text-sm mt-1">{errors.name}</p>
+                )}
               </div>
 
               {/* Photo URL */}
@@ -120,7 +141,7 @@ const Signup = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter your photo URL"
+                  placeholder="Enter your photo URL (optional)"
                   className="input input-bordered w-full"
                   value={formData.photoURL}
                   onChange={(e) =>
@@ -137,13 +158,17 @@ const Signup = () => {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="input input-bordered w-full"
-                  required
+                  className={`input input-bordered w-full ${
+                    errors.email ? "input-error" : ""
+                  }`}
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                 />
+                {errors.email && (
+                  <p className="text-error text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               {/* Password */}
@@ -151,22 +176,78 @@ const Signup = () => {
                 <label className="label">
                   <span className="label-text font-semibold">Password</span>
                 </label>
-                <input
-                  type="password"
-                  placeholder="Create a strong password"
-                  className="input input-bordered w-full"
-                  required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <input
+                    type={showPass ? "text" : "password"}
+                    placeholder="Create a strong password"
+                    className={`input input-bordered w-full pr-12 ${
+                      errors.password ? "input-error" : ""
+                    }`}
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass((s) => !s)}
+                    className="btn btn-ghost btn-sm absolute right-2 top-1/2 -translate-y-1/2"
+                    aria-label="Toggle password visibility"
+                  >
+                    {showPass ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-error text-sm mt-1">{errors.password}</p>
+                )}
+                {!errors.password && (
+                  <p className="text-xs text-base-content/60 mt-1">
+                    Must include uppercase, lowercase, and a number.
+                  </p>
+                )}
               </div>
 
-              {/* Submit Button */}
+              {/* Confirm Password */}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">
+                    Confirm Password
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirm ? "text" : "password"}
+                    placeholder="Re-type your password"
+                    className={`input input-bordered w-full pr-12 ${
+                      errors.confirmPassword ? "input-error" : ""
+                    }`}
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm((s) => !s)}
+                    className="btn btn-ghost btn-sm absolute right-2 top-1/2 -translate-y-1/2"
+                    aria-label="Toggle confirm password visibility"
+                  >
+                    {showConfirm ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+
               <button
                 type="submit"
-                className="btn btn-primary w-full mt-4"
+                className="btn btn-primary w-full mt-2"
                 disabled={loading}
               >
                 {loading ? "Creating Account..." : "Sign Up"}
@@ -175,16 +256,27 @@ const Signup = () => {
 
             <div className="divider">OR</div>
 
-            {/* Google Signup */}
-            <button
-              onClick={handleGoogleSignup}
-              className="btn btn-outline w-full flex items-center justify-center gap-2"
-            >
-              <FcGoogle size={22} />
-              Continue with Google
-            </button>
+            {/* Social Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button
+                onClick={handleGoogleSignup}
+                className="btn btn-outline w-full flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                <FcGoogle size={22} />
+                Google
+              </button>
 
-            {/* Redirect to Login */}
+              <button
+                onClick={handleFacebookSignup}
+                className="btn btn-outline w-full flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                <FaFacebook className="text-blue-600" size={20} />
+                Facebook
+              </button>
+            </div>
+
             <p className="text-center text-sm mt-4">
               Already have an account?{" "}
               <Link to="/login" className="link link-primary">

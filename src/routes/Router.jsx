@@ -13,7 +13,17 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Privacy from "../pages/Privacy";
 import Profile from "../pages/Profile";
-import Dashboard from "../pages/Dashboard";
+
+// ✅ Dashboard (role based)
+import DashboardLayout from "../layouts/DashboardLayout";
+import AdminRoute from "./AdminRoute";
+
+import DashboardHome from "../pages/dashboard/DashboardHome";
+import UserDashboard from "../pages/dashboard/UserDashboard";
+import AdminDashboard from "../pages/dashboard/AdminDashboard";
+import ManageUsers from "../pages/dashboard/ManageUsers";
+import ManageHabits from "../pages/dashboard/ManageHabits";
+import DashboardProfile from "../pages/dashboard/DashboardProfile";
 
 const router = createBrowserRouter([
   {
@@ -21,14 +31,10 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <NotFound />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/habit/:id",
-        element: <HabitDetails />,
-      },
+      { path: "/", element: <Home /> },
+
+      { path: "/habit/:id", element: <HabitDetails /> },
+
       {
         path: "/add-habit",
         element: (
@@ -47,31 +53,15 @@ const router = createBrowserRouter([
         ),
       },
 
-      {
-        path: "/browse",
-        element: <BrowsePublicHabits />,
-      },
+      { path: "/browse", element: <BrowsePublicHabits /> },
 
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Signup />,
-      },
-      {
-        path: "/about",
-        element: <About />,
-      },
-      {
-        path: "/contact",
-        element: <Contact />,
-      },
-      {
-        path: "/privacy",
-        element: <Privacy />,
-      },
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Signup /> },
+
+      { path: "/about", element: <About /> },
+      { path: "/contact", element: <Contact /> },
+      { path: "/privacy", element: <Privacy /> },
+
       {
         path: "/profile",
         element: (
@@ -80,12 +70,45 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+    ],
+  },
+
+  // ✅ Dashboard routes (separate layout)
+  {
+    path: "/dashboard",
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <DashboardHome /> },
+
+      { path: "user", element: <UserDashboard /> },
+      { path: "profile", element: <DashboardProfile /> },
+
       {
-        path: "/dashboard",
+        path: "admin",
         element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-habits",
+        element: (
+          <AdminRoute>
+            <ManageHabits />
+          </AdminRoute>
         ),
       },
     ],

@@ -1,51 +1,98 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { auth } from "../services/firebase.config";
+import { useAuth } from "../hooks/useAuth";
+
+const DEMO = {
+  user: { email: "smdnayem52@gmail.com", password: "SMDNAYEM2025@nayem" },
+  admin: { email: "md.bellal010@gmail.com", password: "MD2026@billal" },
+};
+
+const isValidEmail = (email) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
 
 const Login = () => {
+  const { loginWithEmail, signInWithGoogle, signInWithFacebook, loading } =
+    useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const [showPass, setShowPass] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
   const location = useLocation();
+  const from = useMemo(() => location.state?.from?.pathname || "/", [location]);
 
-  const from = location.state?.from?.pathname || "/";
+  const validate = () => {
+    const next = {};
+    if (!email.trim()) next.email = "Email is required.";
+    else if (!isValidEmail(email)) next.email = "Please enter a valid email.";
 
-  const googleProvider = new GoogleAuthProvider();
+    if (!password) next.password = "Password is required.";
+    return next;
+  };
 
-  //  Email & Password Login
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const doLogin = async (e) => {
+    e?.preventDefault?.();
+
+    const nextErrors = validate();
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) return;
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await loginWithEmail(email.trim(), password);
       toast.success("Login successful!");
       navigate(from, { replace: true });
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+    } catch {
+      // toast already shown from AuthContext
     }
   };
 
-  //  Google Login
-  const handleGoogleLogin = async () => {
+  const handleDemoLogin = async (type) => {
+    const creds = DEMO[type];
+    setEmail(creds.email);
+    setPassword(creds.password);
+
+    toast.loading(
+      `Logging in as Demo ${type === "admin" ? "Admin" : "User"}...`,
+      {
+        id: "demo-login",
+      },
+    );
+
     try {
-      await signInWithPopup(auth, googleProvider);
+      await loginWithEmail(creds.email, creds.password);
+      toast.success("Demo login successful!", { id: "demo-login" });
+      navigate(from, { replace: true });
+    } catch {
+      toast.error("Demo login failed. Check Firebase users & password.", {
+        id: "demo-login",
+      });
+    }
+  };
+
+  const handleGoogle = async () => {
+    try {
+      await signInWithGoogle();
       toast.success("Logged in with Google!");
       navigate(from, { replace: true });
-    } catch (error) {
-      toast.error(error.message);
+    } catch {
+      // toast already shown
+    }
+  };
+
+  const handleFacebook = async () => {
+    try {
+      await signInWithFacebook();
+      toast.success("Logged in with Facebook!");
+      navigate(from, { replace: true });
+    } catch {
+      // toast already shown
     }
   };
 
@@ -58,11 +105,11 @@ const Login = () => {
       >
         <div className="card w-full max-w-md bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="text-3xl font-bold text-center text-primary mb-6">
+            <h2 className="text-3xl font-bold text-center text-primary mb-4">
               Log-in
             </h2>
 
-            <form onSubmit={handleEmailLogin} className="space-y-4">
+            <form onSubmit={doLogin} className="space-y-4">
               {/* Email */}
               <div>
                 <label className="label">
@@ -71,11 +118,15 @@ const Login = () => {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="input input-bordered w-full"
+                  className={`input input-bordered w-full ${
+                    errors.email ? "input-error" : ""
+                  }`}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
+                {errors.email && (
+                  <p className="text-error text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               {/* Password */}
@@ -83,40 +134,87 @@ const Login = () => {
                 <label className="label">
                   <span className="label-text font-semibold">Password</span>
                 </label>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  className="input input-bordered w-full"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+
+                <div className="relative">
+                  <input
+                    type={showPass ? "text" : "password"}
+                    placeholder="Enter your password"
+                    className={`input input-bordered w-full pr-12 ${
+                      errors.password ? "input-error" : ""
+                    }`}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass((s) => !s)}
+                    className="btn btn-ghost btn-sm absolute right-2 top-1/2 -translate-y-1/2"
+                    aria-label="Toggle password visibility"
+                  >
+                    {showPass ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+
+                {errors.password && (
+                  <p className="text-error text-sm mt-1">{errors.password}</p>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="btn btn-primary w-full mt-4"
+                className="btn btn-primary w-full mt-2"
                 disabled={loading}
               >
                 {loading ? "Logging in..." : "Login"}
               </button>
             </form>
 
-            {/* Divider */}
             <div className="divider">OR</div>
 
-            {/* Google Login */}
-            <button
-              onClick={handleGoogleLogin}
-              className="btn btn-outline w-full flex items-center justify-center gap-2"
-            >
-              <FcGoogle size={22} />
-              Continue with Google
-            </button>
+            {/* Social Buttons */}
+            <div className="grid grid-cols-1  gap-2">
+              <button
+                onClick={handleGoogle}
+                className="btn w-full flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                <FcGoogle size={22} />
+                Continue with Google
+              </button>
 
-            {/* Redirect to Signup */}
+              {/* <button
+                onClick={handleFacebook}
+                className="btn w-full flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                <FaFacebook className="text-blue-600" size={20} />
+                Facebook
+              </button> */}
+            </div>
+            {/* Demo Buttons */}
+            <div className="divider">Demo Credentials</div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+              <button
+                type="button"
+                onClick={() => handleDemoLogin("user")}
+                className="btn btn-sm btn-soft btn-accent"
+                disabled={loading}
+              >
+                Demo User Login
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin("admin")}
+                className="btn btn-sm btn-warning btn-soft"
+                disabled={loading}
+              >
+                Demo Admin Login
+              </button>
+            </div>
+
             <p className="text-center text-sm mt-4">
-              Don’t have an account?
+              Don’t have an account?{" "}
               <Link to="/signup" className="link link-primary">
                 Register Now
               </Link>
