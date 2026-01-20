@@ -192,7 +192,7 @@ const Navbar = () => {
               {!user ? (
                 <>
                   <li onClick={closeMobileMenu}>
-                    <Link to="/login" className="btn btn-neutral btn-outline">
+                    <Link to="/login" className="btn btn-outline">
                       Login
                     </Link>
                   </li>

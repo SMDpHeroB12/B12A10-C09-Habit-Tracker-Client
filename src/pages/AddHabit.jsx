@@ -72,7 +72,7 @@ const AddHabit = () => {
             "content-type": "application/json",
           },
           body: JSON.stringify(newHabit),
-        }
+        },
       );
 
       const data = await res.json();
@@ -93,7 +93,7 @@ const AddHabit = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-md mt-10">
+    <div className="max-w-lg mx-auto p-6 bg-base-100 border border-gray-200 rounded-2xl shadow-md mt-10">
       <h2 className="text-3xl font-bold mb-6 text-center text-primary">
         Add New Habit
       </h2>
@@ -190,14 +190,14 @@ const AddHabit = () => {
             name="userEmail"
             value={user?.email || ""}
             readOnly
-            className="w-full p-3 border border-gray-200 rounded-lg bg-gray-100"
+            className="w-full p-3 border border-gray-200 rounded-lg bg-base-100"
           />
           <input
             type="text"
             name="userName"
             value={user?.displayName || ""}
             readOnly
-            className="w-full p-3 border border-gray-200 rounded-lg bg-gray-100"
+            className="w-full p-3 border border-gray-200 bg-base-100  rounded-lg "
           />
 
           <button
